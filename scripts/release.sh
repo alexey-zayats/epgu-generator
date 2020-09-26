@@ -10,7 +10,7 @@ cd $DIRPATH/..
 set -ex
 
 REGISTRY_URL=aazayats
-IMAGE=${REGISTRY_URL}/sdf-converter
+IMAGE=${REGISTRY_URL}/epgu-generator
 
 docker run --rm -v "$PWD":/app treeder/bump patch
 
