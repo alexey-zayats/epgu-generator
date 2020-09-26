@@ -4,6 +4,6 @@ Log:
 Workers: 8
 Registry: /work/registry.xlsx
 Dir:
-  Template: /work/templates
+  Template: /app/templates
   Artefact: /work/artefact
   Tmp: /work/tmp
