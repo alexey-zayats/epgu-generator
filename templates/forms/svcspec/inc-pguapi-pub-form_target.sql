@@ -2,12 +2,14 @@
 -- Change: {{.Change}}
 -- Description:
 begin
-{{$targetID := .ServiceTargetID}}
+
+{{- $targetID := .ServiceTargetID}}
 {{- range .UnlinkService}}{{$len := len .}}{{ if ne $len 0}}
 pgu.pkg_service2.UnLink_eservice2target(
     i_eservice => {{.}},
     i_target => {{$targetID}});
 {{- end}}{{end}}
+
   PGU.PKG_SRVFUTILS.create_service(
     extid                  => '{{.DepartmentCode}}',
     categories             => '{{.ApplicantType}}',
