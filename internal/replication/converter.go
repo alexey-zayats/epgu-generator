@@ -39,17 +39,26 @@ func (c *Converter) Convert(ctx context.Context, reg *model.Replication) error {
 	recordPath := path.Join(c.config.Dir.Tmp, reg.FormCode)
 
 	for _, reg := range reg.Items {
-		folders := artefact.NewFolders(recordPath, fmt.Sprintf("form.61.%s", reg.DepartmentCode))
 
-		// Создаем структуру папок архива
-		if err := folders.MakeStruct(); err != nil {
-			return errors.Wrap(err, "unable make dir struct")
+		select {
+		case <-ctx.Done():
+			return nil
+
+		default:
+
+			folders := artefact.NewFolders(recordPath, fmt.Sprintf("form.61.%s", reg.DepartmentCode))
+
+			// Создаем структуру папок архива
+			if err := folders.MakeStruct(); err != nil {
+				return errors.Wrap(err, "unable make dir struct")
+			}
+
+			// Генерируем скрипты по шаблонам
+			if err := c.content.Prepare(reg, folders.Struct()); err != nil {
+				return errors.Wrapf(err, "unable to prepare content for %s", reg.ServiceTargetID)
+			}
 		}
 
-		// Генерируем скрипты по шаблонам
-		if err := c.content.Prepare(reg, folders.Struct()); err != nil {
-			return errors.Wrapf(err, "unable to prepare content for %s", reg.ServiceTargetID)
-		}
 	}
 
 	// Архивируем артефакты

@@ -1,0 +1,9 @@
+Log:
+  Level: debug
+
+Workers: 8
+Registry: /Users/alexis/workspace/rtlabs/epgu-generator/work/registry.xlsx
+Dir:
+  Template: /Users/alexis/workspace/rtlabs/epgu-generator/templates
+  Artefact: /Users/alexis/workspace/rtlabs/epgu-generator/work/artefact
+  Tmp: /Users/alexis/workspace/rtlabs/epgu-generator/work/tmp

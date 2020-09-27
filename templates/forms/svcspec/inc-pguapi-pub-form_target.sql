@@ -3,16 +3,16 @@
 -- Description:
 begin
 {{$targetID := .ServiceTargetID}}
-{{- range .UnlinkService}}
+{{- range .UnlinkService}}{{$len := len .}}{{ if ne $len 0}}
 pgu.pkg_service2.UnLink_eservice2target(
     i_eservice => {{.}},
     i_target => {{$targetID}});
-{{end}}
+{{- end}}{{end}}
   PGU.PKG_SRVFUTILS.create_service(
     extid                  => '{{.DepartmentCode}}',
     categories             => '{{.ApplicantType}}',
     es_id                  => {{.ServiceFormCode}},
-    targets                => PGU.PKG_SRVFUTILS.T$TARGETS({..ServiceTargetID}),
+    targets                => PGU.PKG_SRVFUTILS.T$TARGETS({{.ServiceTargetID}}),
     fnames                 => PGU.PKG_SRVFUTILS.T$NAMES('{{.ServiceTargetName}}'),
     fshortnames            => PGU.PKG_SRVFUTILS.T$NAMES('{{.ServiceTargetName}}'),
     fp                     => 'pguformsbeta',

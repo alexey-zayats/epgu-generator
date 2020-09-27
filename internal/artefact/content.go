@@ -2,6 +2,7 @@ package artefact
 
 import (
 	"epgu-generator/internal/config"
+	"epgu-generator/internal/incrementer"
 	"epgu-generator/internal/model"
 	"epgu-generator/internal/util"
 	"fmt"
@@ -38,15 +39,13 @@ type Content struct {
 	items        []Item
 	templatePath string
 	template     *Template
-	incrementer  *Incrementer
 }
 
 // ContentDI ...
 type ContentDI struct {
 	dig.In
-	Config      *config.Config
-	Template    *Template
-	Incrementer *Incrementer
+	Config   *config.Config
+	Template *Template
 }
 
 // NewContent ...
@@ -72,7 +71,6 @@ func NewContent(di ContentDI) (*Content, error) {
 		template:     di.Template,
 		items:        items,
 		templatePath: templatePath,
-		incrementer:  di.Incrementer,
 	}, nil
 }
 
@@ -112,7 +110,7 @@ func (c *Content) Prepare(reg *model.Registry, folders map[string]string) error 
 		Change:            reg.Change,
 	}
 
-	inc := fmt.Sprintf("%03d", c.incrementer.Get(reg.DepartmentCode + reg.ServiceFormCode))
+	inc := fmt.Sprintf("%03d", incrementer.Instance().Get(reg.DepartmentCode))
 
 	for _, item := range c.items {
 

@@ -36,14 +36,13 @@ func converterMain(cmd *cobra.Command, args []string) {
 
 	di := &di.Runner{
 		Provide: map[string]interface{}{
-			"config":                     config.NewConfig,
-			"registry.NewParser":         registry.NewParser,
-			"artefact.NewTemplates":      artefact.NewTemplates,
-			"artefact.NewContent":        artefact.NewContent,
-			"artefact.NewFolders":        artefact.NewFolders,
-			"replication.NewIncrementer": artefact.NewIncrementer,
-			"replication.Converter":      replication.NewConverter,
-			"consumer.Converter":         consumer.NewReplication,
+			"config":                config.NewConfig,
+			"registry.NewParser":    registry.NewParser,
+			"artefact.NewTemplates": artefact.NewTemplates,
+			"artefact.NewContent":   artefact.NewContent,
+			"artefact.NewFolders":   artefact.NewFolders,
+			"replication.Converter": replication.NewConverter,
+			"consumer.Converter":    consumer.NewReplication,
 		},
 		Invoke: func(ctx context.Context, args []string) interface{} {
 			return func(i consumer.Consumer) {
