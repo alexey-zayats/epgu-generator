@@ -1,12 +1,12 @@
 package registry
 
 import (
+	"context"
 	"epgu-generator/internal/model"
 	"epgu-generator/internal/util"
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -23,7 +23,7 @@ func NewParser() *Parser {
 }
 
 // Parse ...
-func (p *Parser) Parse(filePath string) (map[string][]*model.Registry, error) {
+func (p *Parser) Parse(ctx context.Context, filePath string) (map[string][]*model.Registry, error) {
 
 	f, err := excelize.OpenFile(filePath)
 	if err != nil {
@@ -31,7 +31,12 @@ func (p *Parser) Parse(filePath string) (map[string][]*model.Registry, error) {
 	}
 
 	for _, sheet := range f.GetSheetMap() {
-		logrus.Debug(sheet)
+
+		select {
+		case <-ctx.Done():
+			return nil, errors.New("parse canceled by context")
+		default:
+		}
 
 		rows, err := f.Rows(sheet)
 		if err != nil {
