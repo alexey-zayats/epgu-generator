@@ -8,6 +8,7 @@ import (
 	"epgu-generator/internal/replication"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/dig"
+	"sort"
 	"sync"
 )
 
@@ -55,47 +56,42 @@ func (c *Replication) Run(ctx context.Context, args []string) {
 		go c.worker(ctx, i)
 	}
 
-	c.wg.Add(1)
-	go c.registry(ctx)
+	c.registry(ctx)
+
+	close(c.registryChan)
 
 	c.wg.Wait()
-}
-
-func (c *Replication) end() {
-	for i := 0; i < c.workers; i++ {
-		c.registryChan <- nil
-	}
 }
 
 func (c *Replication) registry(ctx context.Context) {
 
 	logrus.Debug("run registry parser proc")
 
-	defer func() {
-		logrus.Debug("registry parser finished")
-		c.wg.Done()
-	}()
-
-	select {
-	case <-ctx.Done():
-		return
-
-	default:
-
-		data, err := c.registryParser.Parse(c.registryFile)
-		if err != nil {
-			logrus.WithError(err).Errorf("unable parse registry file %s", c.registryFile)
-		}
-
-		for formCode, registries := range data {
-			c.registryChan <- &model.Replication{
-				FormCode: formCode,
-				Items:    registries,
-			}
-		}
-
-		c.end()
+	data, err := c.registryParser.Parse(c.registryFile)
+	if err != nil {
+		logrus.WithError(err).Errorf("unable parse registry file %s", c.registryFile)
 	}
+
+	z := 0
+
+	forms := make([]string, 0, len(data))
+	for key, _ := range data {
+		forms = append(forms, key)
+	}
+
+	sort.Strings(forms)
+
+	for _, formCode := range forms {
+		registries := data[formCode]
+		z += len(registries)
+		c.registryChan <- &model.Replication{
+			FormCode: formCode,
+			Items:    registries,
+		}
+	}
+
+	logrus.WithFields(logrus.Fields{"records": z}).Info("parsed")
+
 }
 
 func (c *Replication) worker(ctx context.Context, worker int) {
