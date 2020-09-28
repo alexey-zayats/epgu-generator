@@ -49,7 +49,7 @@ func NewReplication(di ReplicationDI) (Consumer, error) {
 // Run запускает конвертер
 func (c *Replication) Run(ctx context.Context, args []string) {
 
-	logrus.WithFields(logrus.Fields{}).Debug("run replication")
+	logrus.WithFields(logrus.Fields{"args": args}).Debug("run replication")
 
 	for i := 0; i < c.workers; i++ {
 		c.wg.Add(1)
@@ -67,7 +67,7 @@ func (c *Replication) registry(ctx context.Context) {
 
 	logrus.Debug("run registry parser proc")
 
-	data, err := c.registryParser.Parse(c.registryFile)
+	data, err := c.registryParser.Parse(ctx, c.registryFile)
 	if err != nil {
 		logrus.WithError(err).Errorf("unable parse registry file %s", c.registryFile)
 	}
@@ -75,7 +75,7 @@ func (c *Replication) registry(ctx context.Context) {
 	z := 0
 
 	forms := make([]string, 0, len(data))
-	for key, _ := range data {
+	for key := range data {
 		forms = append(forms, key)
 	}
 
