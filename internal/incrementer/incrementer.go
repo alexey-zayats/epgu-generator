@@ -5,6 +5,7 @@ import "sync"
 // Incrementer ...
 type Incrementer interface {
 	Get(key string) int64
+	Dump() map[string]int64
 }
 
 type incrementer struct {
@@ -25,6 +26,13 @@ func Instance() Incrementer {
 	}
 
 	return inc
+}
+
+func (i *incrementer) Dump() map[string]int64 {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+
+	return i.data
 }
 
 // Get ...

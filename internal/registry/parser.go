@@ -64,7 +64,6 @@ func (p *Parser) Parse(filePath string) (map[string][]*model.Registry, error) {
 			serviceFormCode := f.GetCellValue(sheet, axis["serviceFormCode"])
 			applicantType := f.GetCellValue(sheet, axis["applicantType"])
 			useSignature := f.GetCellValue(sheet, axis["useSignature"])
-
 			unlinkService := f.GetCellValue(sheet, axis["unlinkService"])
 			change := f.GetCellValue(sheet, axis["change"])
 
