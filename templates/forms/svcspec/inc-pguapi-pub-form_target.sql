@@ -5,10 +5,15 @@ begin
 
 {{- $targetID := .ServiceTargetID}}
 {{- range .UnlinkService}}{{$len := len .}}{{ if ne $len 0}}
-pgu.pkg_service2.UnLink_eservice2target(
+  PGU.PKG_SERVICE2.UnLink_eservice2target(
     i_eservice => {{.}},
     i_target => {{$targetID}});
 {{- end}}{{end}}
+
+  PGU.PKG_SERVICE2.create_StateOrg(
+    i_ss => {{.DepartmentCode}}, -- код ведомства
+    i_updatedBy => 'Eremenko', -- тут указываем себя
+    i_updateReason => 'eservices added');
 
   PGU.PKG_SRVFUTILS.create_service(
     extid                  => '{{.DepartmentCode}}',
