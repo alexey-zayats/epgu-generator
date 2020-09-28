@@ -1,7 +1,8 @@
 Log:
   Level: debug
 
-Workers: 8
+Workers: 2
+
 Registry: /Users/alexis/workspace/rtlabs/epgu-generator/work/registry.xlsx
 Dir:
   Template: /Users/alexis/workspace/rtlabs/epgu-generator/templates
